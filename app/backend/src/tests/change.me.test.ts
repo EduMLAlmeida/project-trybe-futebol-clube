@@ -14,7 +14,7 @@ const { app } = new App();
 
 const { expect } = chai;
 
-describe('Seu teste', () => {
+describe('POST /login', () => {
   /**
    * Exemplo do uso de stubs com tipos
    */
@@ -40,8 +40,16 @@ describe('Seu teste', () => {
 
   //   expect(...)
   // });
-
-  it('Seu sub-teste', () => {
-    expect(false).to.be.eq(true);
-  });
+  describe('quando o campo "email" não é informado', () => {
+    it('deve retornar um status 400', async () => {
+      const httpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send({ password: 'string' })
+      expect(httpResponse.status).to.equal(400)
+      expect(httpResponse.body).to.deep.equal(
+        { message: 'All fields must be filled' }
+      )
+    });
+  })
 });
