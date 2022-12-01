@@ -9,8 +9,8 @@ export default class UserController {
   }
 
   async login(req: Request, res: Response) {
-    const users = await this.userService.login();
+    const token = await this.userService.login(req.body);
 
-    return res.status(200).json(users);
+    return res.status(200).json({ token });
   }
 }

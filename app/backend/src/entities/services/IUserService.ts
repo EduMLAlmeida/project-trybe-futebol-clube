@@ -1,3 +1,5 @@
+import ILogin from '../ILogin';
+
 export default interface IUserService {
-  login(): Promise<object>;
+  login(login: ILogin): Promise<string>;
 }

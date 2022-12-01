@@ -44,7 +44,7 @@ describe('POST /login', () => {
     it('deve retornar um status 400', async () => {
       const httpResponse = await chai
         .request(app)
-        .post('/login')
+        .post('/login')        
         .send({ password: 'string' })
       expect(httpResponse.status).to.equal(400)
       expect(httpResponse.body).to.deep.equal(

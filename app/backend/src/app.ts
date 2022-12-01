@@ -1,5 +1,7 @@
+import 'express-async-errors';
 import * as express from 'express';
 import userRouter from './routers/userRouter';
+import errorMiddleware from './middlewares/errorMiddleware';
 
 class App {
   public app: express.Express;
@@ -29,6 +31,7 @@ class App {
   private routes(): void {
     this.app.get('/health', (req, res) => res.status(200).json({ health: 'OK' }));
     this.app.use(userRouter);
+    this.app.use(errorMiddleware);
   }
 
   public start(PORT: string | number):void {
