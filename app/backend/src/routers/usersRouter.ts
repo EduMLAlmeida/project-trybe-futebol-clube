@@ -6,17 +6,17 @@ import validateToken from '../middlewares/validateToken';
 
 const userService = new UserService();
 const userController = new UserController(userService);
-const userRouter = Router();
+const usersRouter = Router();
 
-userRouter.post(
+usersRouter.post(
   '/login',
   validateLoginBody,
   (req, res) => userController.login(req, res),
 );
 
-userRouter.get(
+usersRouter.get(
   '/login/validate',
   validateToken,
   (req, res) => UserController.loginValidate(req, res),
 );
-export default userRouter;
+export default usersRouter;
