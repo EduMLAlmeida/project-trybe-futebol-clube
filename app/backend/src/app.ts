@@ -3,6 +3,7 @@ import * as express from 'express';
 import usersRouter from './routers/usersRouter';
 import errorMiddleware from './middlewares/errorMiddleware';
 import teamsRouter from './routers/teamsRouter';
+import matchesRouter from './routers/matchesRouter';
 
 class App {
   public app: express.Express;
@@ -33,6 +34,7 @@ class App {
     this.app.get('/health', (req, res) => res.status(200).json({ health: 'OK' }));
     this.app.use(usersRouter);
     this.app.use(teamsRouter);
+    this.app.use(matchesRouter);
     this.app.use(errorMiddleware);
   }
 
