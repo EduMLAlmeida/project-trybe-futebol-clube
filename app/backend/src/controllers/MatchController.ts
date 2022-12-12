@@ -21,4 +21,16 @@ export default class MatchController {
 
     return res.status(200).json(allMatches);
   }
+
+  async createMatch(req: Request, res: Response) {
+    const newMatch = await this.matchService.createMatch(req.body);
+
+    return res.status(201).json(newMatch);
+  }
+
+  async finishMatch(req: Request, res: Response) {
+    await this.matchService.finishMatch(req.params.id);
+
+    return res.status(200).json({ message: 'Finished' });
+  }
 }

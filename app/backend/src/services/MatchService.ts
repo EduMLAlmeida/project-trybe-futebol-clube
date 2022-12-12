@@ -1,4 +1,4 @@
-// import TeamModel from '../database/models/TeamModel';
+import IMatch from '../entities/IMatch';
 import MatchModel from '../database/models/MatchModel';
 
 export default class MatchService {
@@ -27,5 +27,22 @@ export default class MatchService {
     });
 
     return matchesByProgress;
+  }
+
+  async createMatch(match: IMatch) {
+    const requestedMatch = {
+      ...match,
+      inProgress: true,
+    };
+
+    const newMatch = await this.matchModel.create(requestedMatch);
+
+    return newMatch;
+  }
+
+  async finishMatch(stringId: string) {
+    const id = Number(stringId);
+
+    await this.matchModel.update({ inProgress: false }, { where: { id } });
   }
 }
