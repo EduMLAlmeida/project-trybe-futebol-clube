@@ -10,10 +10,10 @@ const secret = process.env.JWT_SECRET;
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
-  const verify = jwt.verify(authorization as string, secret as string);
-
-  if (!verify) {
-    throw new UnauthorizedError('You must be logged in');
+  try {
+    jwt.verify(authorization as string, secret as string);
+  } catch (error) {
+    throw new UnauthorizedError('Token must be a valid token');
   }
 
   next();
