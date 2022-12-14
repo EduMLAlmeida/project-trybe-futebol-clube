@@ -8,7 +8,7 @@ export default class TeamController {
     this.teamService = TeamService;
   }
 
-  async getAllTeams(req: Request, res: Response) {
+  async getAllTeams(_req: Request, res: Response) {
     const allTeams = await this.teamService.getAllTeams();
 
     return res.status(200).json(allTeams);
@@ -17,6 +17,6 @@ export default class TeamController {
   async getTeam(req: Request, res: Response) {
     const team = await this.teamService.getTeam(req.params.id);
 
-    return res.status(200).json({ id: team.id, teamName: team.teamName });
+    return res.status(200).json(team);
   }
 }
