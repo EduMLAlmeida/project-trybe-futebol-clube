@@ -7,6 +7,7 @@ import {
   goalsOwn,
   goalsBalance,
   efficiency,
+  progressFilter,
 } from '../helpers/functions';
 import MatchModel from '../database/models/MatchModel';
 import TeamModel from '../database/models/TeamModel';
@@ -24,21 +25,21 @@ export default class LeaderboardService implements ILeaderboardService {
     this.matchModel = matchModel;
   }
 
-  static createTeamData(teamRawData: IMatch[]) {
+  static createTeamData(teamRawData: IMatch[], filter: string) {
     return {
-      totalPoints: totalPoints(teamRawData),
+      totalPoints: totalPoints(teamRawData, filter),
       totalGames: teamRawData.length,
-      totalVictories: totalVictories(teamRawData),
+      totalVictories: totalVictories(teamRawData, filter),
       totalDraws: totalDraws(teamRawData),
-      totalLosses: totalLosses(teamRawData),
-      goalsFavor: goalsFavor(teamRawData),
-      goalsOwn: goalsOwn(teamRawData),
-      goalsBalance: goalsBalance(teamRawData),
-      efficiency: efficiency(teamRawData),
+      totalLosses: totalLosses(teamRawData, filter),
+      goalsFavor: goalsFavor(teamRawData, filter),
+      goalsOwn: goalsOwn(teamRawData, filter),
+      goalsBalance: goalsBalance(teamRawData, filter),
+      efficiency: efficiency(teamRawData, filter),
     };
   }
 
-  async getHomeData() {
+  async getData(filter: string) {
     const result: ITeamData[] = [];
 
     const allTeams = await this.teamModel.findAll();
@@ -48,9 +49,9 @@ export default class LeaderboardService implements ILeaderboardService {
     const inProgressMatches = allMatches.filter((match) => match.inProgress === false);
 
     allTeams.forEach(async (team) => {
-      const homeTeamMatches = inProgressMatches.filter((match) => match.homeTeam === team.id);
+      const teamMatches = progressFilter(inProgressMatches, filter, team);
 
-      const teamData = LeaderboardService.createTeamData(homeTeamMatches);
+      const teamData = LeaderboardService.createTeamData(teamMatches as IMatch[], filter);
 
       result.push({ name: team.teamName, ...teamData });
     });

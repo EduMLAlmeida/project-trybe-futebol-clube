@@ -9,7 +9,17 @@ export default class LeaderboardController {
   }
 
   async getHomeData(req: Request, res: Response) {
-    const homeData = await this.leaderboardService.getHomeData();
+    const filter = 'home';
+
+    const homeData = await this.leaderboardService.getData(filter);
+
+    return res.status(200).json(homeData);
+  }
+
+  async getAwayData(req: Request, res: Response) {
+    const filter = 'away';
+
+    const homeData = await this.leaderboardService.getData(filter);
 
     return res.status(200).json(homeData);
   }

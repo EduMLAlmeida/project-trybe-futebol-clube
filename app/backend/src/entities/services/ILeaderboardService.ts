@@ -1,5 +1,5 @@
 import ITeamData from '../ITeamData';
 
 export default interface ILeaderboardService {
-  getHomeData(): Promise<ITeamData[]>;
+  getData(filter: string): Promise<ITeamData[]>;
 }
