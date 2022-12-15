@@ -2,13 +2,13 @@ import TeamModel from '../database/models/TeamModel';
 import MatchModel from '../database/models/MatchModel';
 import IMatch from '../entities/IMatch';
 
-const totalVictories = (teamRawData: IMatch[], filter: string) => {
+const totalVictories = (teamRawData: IMatch[], team: TeamModel) => {
   let total = 0;
 
   teamRawData.forEach((match) => {
     let condition = match.homeTeamGoals > match.awayTeamGoals;
 
-    if (filter === 'away') {
+    if (match.awayTeam === team.id) {
       condition = match.awayTeamGoals > match.homeTeamGoals;
     }
 
@@ -32,8 +32,8 @@ const totalDraws = (teamRawData: IMatch[]) => {
   return total;
 };
 
-const totalPoints = (teamRawData: IMatch[], filter: string) => {
-  const victoryPoints = totalVictories(teamRawData, filter) * 3;
+const totalPoints = (teamRawData: IMatch[], team: TeamModel) => {
+  const victoryPoints = totalVictories(teamRawData, team) * 3;
 
   const drawPoints = totalDraws(teamRawData) * 1;
 
@@ -42,13 +42,13 @@ const totalPoints = (teamRawData: IMatch[], filter: string) => {
   return total;
 };
 
-const totalLosses = (teamRawData: IMatch[], filter: string) => {
+const totalLosses = (teamRawData: IMatch[], team:TeamModel) => {
   let total = 0;
 
   teamRawData.forEach((match) => {
     let condition = match.homeTeamGoals < match.awayTeamGoals;
 
-    if (filter === 'away') {
+    if (match.awayTeam === team.id) {
       condition = match.awayTeamGoals < match.homeTeamGoals;
     }
 
@@ -60,50 +60,46 @@ const totalLosses = (teamRawData: IMatch[], filter: string) => {
   return total;
 };
 
-const goalsFavor = (teamRawData: IMatch[], filter: string) => {
+const goalsFavor = (teamRawData: IMatch[], team:TeamModel) => {
   let total = 0;
 
-  if (filter === 'home') {
-    teamRawData.forEach((match) => {
+  teamRawData.forEach((match) => {
+    if (match.homeTeam === team.id) {
       total += match.homeTeamGoals;
-    });
-  } else {
-    teamRawData.forEach((match) => {
+    } else {
       total += match.awayTeamGoals;
-    });
-  }
+    }
+  });
 
   return total;
 };
 
-const goalsOwn = (teamRawData: IMatch[], filter: string) => {
+const goalsOwn = (teamRawData: IMatch[], team:TeamModel) => {
   let total = 0;
 
-  if (filter === 'home') {
-    teamRawData.forEach((match) => {
+  teamRawData.forEach((match) => {
+    if (match.homeTeam === team.id) {
       total += match.awayTeamGoals;
-    });
-  } else {
-    teamRawData.forEach((match) => {
+    } else {
       total += match.homeTeamGoals;
-    });
-  }
+    }
+  });
 
   return total;
 };
 
-const goalsBalance = (teamRawData: IMatch[], filter: string) => {
-  const favorGoals = goalsFavor(teamRawData, filter);
+const goalsBalance = (teamRawData: IMatch[], team:TeamModel) => {
+  const favorGoals = goalsFavor(teamRawData, team);
 
-  const ownGoals = goalsOwn(teamRawData, filter);
+  const ownGoals = goalsOwn(teamRawData, team);
 
   const total = favorGoals - ownGoals;
 
   return total;
 };
 
-const efficiency = (teamRawData: IMatch[], filter: string) => {
-  const points = totalPoints(teamRawData, filter);
+const efficiency = (teamRawData: IMatch[], team: TeamModel) => {
+  const points = totalPoints(teamRawData, team);
 
   const matches = teamRawData.length;
 
@@ -112,7 +108,7 @@ const efficiency = (teamRawData: IMatch[], filter: string) => {
   return total.toFixed(2).toString();
 };
 
-const progressFilter = (inProgressMatches: MatchModel[], filter: string, team: TeamModel) => {
+const teamFilter = (inProgressMatches: MatchModel[], filter: string, team: TeamModel) => {
   if (filter === 'home') {
     const teamMatches = inProgressMatches.filter((match) => match.homeTeam === team.id);
 
@@ -121,6 +117,13 @@ const progressFilter = (inProgressMatches: MatchModel[], filter: string, team: T
 
   if (filter === 'away') {
     const teamMatches = inProgressMatches.filter((match) => match.awayTeam === team.id);
+
+    return teamMatches;
+  }
+
+  if (filter === 'none') {
+    const teamMatches = inProgressMatches.filter((match) => match.awayTeam === team.id
+      || match.homeTeam === team.id);
 
     return teamMatches;
   }
@@ -135,5 +138,5 @@ export {
   goalsOwn,
   goalsBalance,
   efficiency,
-  progressFilter,
+  teamFilter,
 };

@@ -23,4 +23,12 @@ export default class LeaderboardController {
 
     return res.status(200).json(homeData);
   }
+
+  async getData(req: Request, res: Response) {
+    const filter = 'none';
+
+    const homeData = await this.leaderboardService.getData(filter);
+
+    return res.status(200).json(homeData);
+  }
 }
